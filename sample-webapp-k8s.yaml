@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-webapp
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-webapp
+  template:
+    metadata:
+      labels:
+        app: sample-webapp
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: colima
+      containers:
+        - name: sample-webapp
+          image: 100.67.240.124:30500/sample-webapp:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-webapp
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: sample-webapp
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30081
